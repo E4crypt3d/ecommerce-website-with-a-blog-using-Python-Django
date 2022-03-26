@@ -1,0 +1,29 @@
+{% extends 'buybest/basic.html' %}
+{% block title %}Thanks for shopping with us{% endblock title %}
+
+{% block body%}
+<div class="container my-5 border">
+    <h3>Thanks for shopping with Buy Best</h3>
+    <hr>
+    <div class="row">
+        <div class="col my-5">
+            <div class="alert alert-success my-3" role="alert">
+                <h4 class="alert-heading">Your Order has been confirmed!</h4>
+                <p>Thanks for ordering with us.  Use it to track your order using our order tracker</p>
+                <hr>
+                <p class="mb-0">Your order id is {{id}}.</p>
+                <a href="/tracker/">Track Your Order Here</a>
+              </div>
+        </div>
+        <div class="col my-5">
+            {% load static %}
+          <img class="ml-5" src="{%static 'buybest/logo.png'%}" alt="LOGO">
+        </div>
+      </div>
+</div>
+{% if order %}
+    alert('Thanks for ordering with us. Your order id is {{id}}. Use it to track your order using our order tracker');
+    localStorage.clear();
+    document.location = "/";
+    {% endif %}
+{%endblock%}

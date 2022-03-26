@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous" />
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+      integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+      crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+      integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+      crossorigin="anonymous"></script>
+    {%load static%}
+    <link rel="icon" href="{%static 'buybest/logo.png'%}" type="image/x-icon" />
+    <title>Buy Best - {% block title%} {% endblock %}</title>
+    {%block css%} {%endblock css%}
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="/">Buy Best</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/tracker">Tracker</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/about">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/blog">Our Blog</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/contact">Contact Us</a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0" method="get" action="/search/">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search"/>
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+            Search
+          </button>
+        </form>
+        <button type="button" id="popcart" class="btn btn-outline-success mx-2" data-container="body"
+          data-toggle="popover" data-placement="right" data-html="true"
+          data-content="<div class='container'><h5 class='navbar navbar-dark bg-dark text-white'><b>Your Buy Best Cart</b></h5><b>Your cart is empty</b></div>">
+          Cart(<span id="cart">0</span>)
+        </button>
+      </div>
+    </nav>
+    {% block body %} {% endblock %}
+
+
+    <!--Footer-->
+    <footer class="card-footer bg-dark text-center container-fluid">
+      <p class="text-white" id="thisyear"></p>
+      <script>
+        var CurrentYear = new Date().getFullYear();
+        document.getElementById("thisyear").innerHTML =
+          "Copyright © " +
+          CurrentYear +
+          ' Designed &amp; Developed by <a class="text-blue" href="https://github.com/E4crypt3d" target="_blank">E4CRYPT3D</a>';
+      </script>
+    </footer>
+    {%block js%}{%endblock%}
+  </body>
+
+</html>

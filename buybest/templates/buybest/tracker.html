@@ -1,0 +1,100 @@
+{% extends 'buybest/basic.html' %}
+{% block title %}Tracker{% endblock title%}
+{% block body %}
+<div class="container">
+    <div class="col my-5 border">
+        <h2 class="my-5">Enter your Order Id and Email address to track your order</h2>
+        <form method="post" action="#" id="trackerForm">{% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputname">Order Id</label>
+                    <input type="text" class="form-control" id="orderId" name="orderId" placeholder="Order Id" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                </div>
+                <button type="submit" class="btn btn-outline-success bg-dark my-5">Track Order</button>
+            </div>
+    </div>
+    <div class="col my-5 border">
+        <div class="my-5">
+            <h2 class="my-5">Your Order Status:</h2>
+            <ul class="list-group" id="items">
+                Enter your order Id and Email and click Track Order to find details about your order!
+            </ul>
+            <h2 class="mt-4"><span id="details"></span></h2>
+            <div class="my-4">
+                <ul class="list-group" id="citems">
+                </ul>
+                <h4 class="text-center border mt-3"><span class="badge bg-secondary " id="utotal"></span></h4>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}
+{% block js %}
+<script>
+    $('#trackerForm').submit(function (event) {
+        $('#items').empty();
+        var formData = {
+            'orderId': $('input[name=orderId]').val(),
+            'email': $('input[name=email]').val(),
+            'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/tracker/',
+            data: formData,
+            encode: true
+        })
+            .done(function (data) {
+                $('#citems',).empty();
+                $('#details',).empty();
+                $('#utotal').empty();
+                data = JSON.parse(data);
+                if (data['status'] == 'success') {
+                    updates = data['updates'];
+                    for (i = 0; i < updates.length; i++) {
+                        let text = updates[i]['text'];
+                        let time = updates[i]['time'];
+                        mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${text}
+                    <span class="badge badge-primary badge-pill">${time}</span>
+                </li>`
+                        $('#items').append(mystr);
+                    }
+                    document.getElementById('details').innerHTML = 'Your Order Details: ';
+                    // Fill in the order details
+                    //cart = JSON.parse(data['items'])
+
+                    cart = JSON.parse(data['items']);
+                    var total = 0;
+                    for (item in cart) {
+                        let name = cart[item][1];
+                        let qty = cart[item][0];
+                        let price = cart[item][2];
+                        let item_total = qty * price;
+                        total = total + item_total;
+                        mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${name}
+                    <span class="badge badge-primary badge-pill">QTY : ${qty}</span>
+                    <span class="badge badge-primary badge-pill">PRICE : ${item_total}</span>
+                </li>`
+                        $('#citems').append(mystr);
+                    }
+                    document.getElementById('utotal').innerHTML = 'Total : ' + total;
+                    
+
+                }
+                else {
+                    $('#utotal').empty();
+                    status = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    Sorry, We are not able to fetch this order id and email. Make sure to type correct order Id and email</li>`
+                    $('#items').append(status);
+                }
+            });
+        event.preventDefault();
+    });
+</script>
+{% endblock %}

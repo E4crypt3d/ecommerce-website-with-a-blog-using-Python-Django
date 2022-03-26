@@ -1,0 +1,157 @@
+{% extends 'buybest/basic.html'%}
+{% block title %} {{product.product_name}} {% endblock title %}
+{% block body %}
+<div class="container my-5 ">
+    <div class="row my-4 border">
+        <div class="col-md-4 ">
+            <div class="row my-5" style="margin-right: 37px;">
+                <img src="/media/{{product.image}}" style="width: 330px; height: 310px; align-items: center;">
+            </div>
+            <div class="row justify-content-center my-5">
+                <span class="buynow">
+                    <a href="/checkout"><button id="prod{{product.id}}" name="buy"
+                            class="buynow btn btn-outline-success bg-dark my-4 mx-4">Buy Now</button></a>
+                </span>
+                <span class="addtocart" id="addtocart">
+                    <button class="addtocart btn btn-outline-success bg-dark my-4 mx-4">Add to Cart</button>
+                </span>
+                <!--Buy item to cart and add a add to cart button-->
+            </div>
+        </div>
+        <div class="col-md-8 my-5 ">
+            <h5><b id="name">{{product.product_name}}</b></h5>
+            <hr>
+            <p><b>Rs.<span id="price">{{product.price}}</span></b></p>
+            <button id="remove" onclick="remove()" class="btn btn-outline-success bg-dark remove">-</button>
+            <span id="value">0</span>
+            <button id="add" onclick="add()" class="btn btn-outline-success bg-dark add">+</button>
+            <p class="mt-5">{{product.description}}</p>
+        </div>
+    </div>
+
+</div>
+{%endblock%}
+
+{% block js %}
+<script>
+    document.getElementById('value').innerHTML = 1;
+    if (localStorage.getItem('cart') == null) {
+        var cart = {};
+        document.getElementById('cart').innerHTML = 0;
+    }
+    else {
+        var cart = {};
+        cart = JSON.parse(localStorage.getItem('cart'));
+        var sum = 0;
+        for (var item in cart) {
+            var sum = sum + cart[item][0];
+            document.getElementById('cart').innerHTML = sum;
+            updatepopover(cart);
+            $('#popcart').popover();
+
+        }
+    }
+
+    function add() {
+        value = parseInt(document.getElementById('value').innerHTML);
+        value = value + 1;
+        document.getElementById('value').innerHTML = value;
+        var name = document.getElementById('name').innerHTML;
+        var price = document.getElementById('price').innerHTML;
+        var qty = value;
+        var id = document.getElementsByName('buy')[0].id;
+        cart[id] = [qty, name, price];
+        localStorage.setItem('cart', JSON.stringify(cart));
+        var sum = 0;
+        for (var item in cart) {
+            var sum = sum + cart[item][0];
+            document.getElementById('cart').innerHTML = sum;
+            updatepopover(cart);
+            $("#popcart").popover("show");
+
+        }
+
+    }
+
+    function remove() {
+        value = parseInt(document.getElementById('value').innerHTML);
+        value = value - 1;
+        value = Math.max(1, value);
+        document.getElementById('value').innerHTML = value;
+        var name = document.getElementById('name').innerHTML;
+        var price = document.getElementById('price').innerHTML;
+        var qty = value;
+        var id = document.getElementsByName('buy')[0].id;
+        cart[id] = [qty, name, price];
+        localStorage.setItem('cart', JSON.stringify(cart));
+        var sum = 0;
+        for (var item in cart) {
+            var sum = sum + cart[item][0];
+            document.getElementById('cart').innerHTML = sum;
+            updatepopover(cart);
+            $("#popcart").popover("show");
+
+        }
+
+    }
+
+    var ider = document.getElementsByName('buy')[0].id;
+    if (cart[ider] == undefined) {
+        val = 1;
+    }
+    else {
+        val = cart[ider][0];
+    }
+    document.getElementById('value').innerHTML = val;
+
+    $('#popcart').popover();
+
+    function updatepopover(cart) {
+        var popstr = "";
+        popstr = popstr + "<div class='container'><h5 class='navbar navbar-dark bg-dark text-white'><b>Your Buy Best Cart</b></h5><div>";
+        var i = 1;
+        for (var item in cart) {
+            console.log()
+            popstr = popstr + "<b>" + i + ": </b>";
+            popstr = popstr +
+                cart[item][1].slice(0, 19) + "... Qty: " + cart[item][0] + '<hr style="margin-top: 0rem;margin-bottom: 0rem;border-top:1px dashed black;"><br>';
+            i = i + 1;
+        }
+        popstr = popstr + '</div><a href="/checkout/"> <button id="checkout" class="btn btn-outline-success bg-dark">Check Out</button></a><button id="clearcart" class="btn btn-outline-success bg-dark" onclick="clearcart()">Clear Cart</button></div>';
+        document.getElementById("popcart").setAttribute("data-content", popstr);
+    }
+
+    function clearcart(cart) {
+        localStorage.clear();
+        cart = {};
+        localStorage.setItem('cart', JSON.stringify(cart));
+        document.getElementById("popcart").setAttribute("data-content", "<div class='container'><h5 class='navbar navbar-dark bg-dark text-white'><b>Your Buy Best Cart</b></h5><b>Your cart is empty</b></div>");
+        document.getElementById('cart').innerHTML = 0;
+        document.getElementById('value').innerHTML = 1;
+        document.getElementById('addtocart').innerHTML = '<button class="addtocart btn btn-outline-success bg-dark my-4 mx-4">Add to Cart</button>';
+        $("#popcart").popover("show");
+    }
+
+$('.addtocart').on('click', 'button.addtocart', function(){
+if (localStorage.getItem('cart')==null){
+    cart = {};
+}
+else{
+    cart = JSON.parse(localStorage.getItem('cart'));
+}
+id = document.getElementsByName('buy')[0].id;
+if (cart[id]==undefined){
+    var name = document.getElementById('name').innerHTML;
+    var price = document.getElementById('price').innerHTML;
+    var qty = 1;
+    cart[id] = [qty, name, price];
+    localStorage.setItem('cart', JSON.stringify(cart));
+    document.getElementById('addtocart').innerHTML = '<button id="clearcart" class="btn btn-outline-success bg-dark my-4 mx-4" onclick="clearcart()">Clear Cart</button>'
+}
+});
+
+if (cart[ider]!=undefined){
+        document.getElementById('addtocart').innerHTML = '<button id="clearcart" class="btn btn-outline-success bg-dark my-4 mx-4" onclick="clearcart()">Clear Cart</button>'
+    }
+</script>
+{% endblock %}
